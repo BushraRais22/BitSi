@@ -65,7 +65,9 @@
             </tbody>
         </table>
         <p>Total: <span id="cart-total">0</span></p>
+        <textarea id="order-specifications" placeholder="Add any special instructions here..."></textarea>
         <button onclick="placeOrder()">Place Order</button>
+        <button onclick="window.location.href='/rating'">Feedback</button>
     </div>
 </div>
 
@@ -102,25 +104,36 @@
 
     function placeOrder() {
         const restaurantId = document.getElementById("restaurant-info").getAttribute("data-restaurant-id");
+        const cartItems = document.getElementById("cart-items").children.length; // Get the count of cart items
+        const specifications = document.getElementById("order-specifications").value; // Get the specifications from the textarea
         if (!restaurantId) {
             alert("Restaurant ID is missing. Please try again.");
             return;
         }
-        fetch(`/cart/place-order?restaurantId=${restaurantId}`, {
+        if (cartItems === 0) { // Check if the cart is empty
+            alert("Your cart is empty. Add items to your cart before placing an order.");
+            return;
+        }
+        fetch(`/cart/place-order?restaurantId=${restaurantId}&specifications=${encodeURIComponent(specifications)}`, {
             method: 'POST'
         })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to place the order');
-                }
-                return response.text();
-            })
+            .then(response => response.json()) // Ensure response is processed as JSON
             .then(data => {
-                alert(data);
-                loadCart(); // Clear the cart after successful order
+                if (data.error) {
+                    alert(data.error); // Show error message if present
+                } else {
+                    alert(data.message); // Success message
+                    document.getElementById("order-specifications").value = ''; // Clear specifications
+                    loadCart(); // Clear the cart after successful order
+                    window.location.href = `/payment?orderId=${data.orderId}`; // Redirect with orderId
+                }
             })
-            .catch(error => console.error('Error placing order:', error));
+            .catch(error => {
+                console.error('Error placing order:', error);
+                alert('Failed to place the order. Please try again.'); // Show error alert
+            });
     }
+
 
     function clearCart() {
         fetch('/cart/clear', {

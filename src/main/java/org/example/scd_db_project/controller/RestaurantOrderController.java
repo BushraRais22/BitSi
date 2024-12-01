@@ -1,16 +1,19 @@
 package org.example.scd_db_project.controller;
-
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+import java.util.Map;
 import jakarta.servlet.http.HttpSession;
-import org.example.scd_db_project.model.*;
-import org.example.scd_db_project.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Date;
+import jakarta.servlet.http.HttpSession;
+import org.example.scd_db_project.model.*;
+import org.example.scd_db_project.repository.*;
+
 
 @Controller
 public class RestaurantOrderController {
@@ -29,11 +32,12 @@ public class RestaurantOrderController {
 
     @PostMapping("/cart/place-order")
     @ResponseBody
-    public String placeOrder(HttpSession session, @RequestParam int restaurantId) {
+    public ResponseEntity<Map<String, Object>> placeOrder(HttpSession session, @RequestParam int restaurantId, @RequestParam String specifications) {
         Integer customerId = (Integer) session.getAttribute("customerId");
         if (customerId == null) {
-            return "Customer not logged in! Please log in to place an order.";
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Customer not logged in! Please log in to place an order."));
         }
+
 
         // Log the received IDs
         System.out.println("Customer ID: " + customerId);
@@ -49,7 +53,7 @@ public class RestaurantOrderController {
 
         Cart cart = (Cart) session.getAttribute("cart");
         if (cart == null || cart.getItems().isEmpty()) {
-            return "Cart is empty!";
+            return ResponseEntity.badRequest().body(Map.of("error", "Cart is empty!"));
         }
         // Create and save RestaurantOrder
         RestaurantOrder order = new RestaurantOrder();
@@ -58,6 +62,7 @@ public class RestaurantOrderController {
         order.setTotal_amount(cart.getTotalAmount());
         order.setStatus("Pending");
         order.setRo_date(new Date());
+        order.setSpecifications(specifications);
         restaurantOrderRep.save(order);
 
         // Save order items
@@ -79,6 +84,6 @@ public class RestaurantOrderController {
         // Clear the cart
         cart.clear();
         session.setAttribute("cart", cart); // Update session cart
-        return "Order placed successfully!";
+        return ResponseEntity.ok(Map.of("message", "Order placed successfully!", "orderId", order.getRo_id()));
     }
 }
