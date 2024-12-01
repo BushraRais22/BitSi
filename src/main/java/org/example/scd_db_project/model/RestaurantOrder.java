@@ -10,7 +10,7 @@ public class RestaurantOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "resorder_seq_generator")
     @SequenceGenerator(name = "resorder_seq_generator", sequenceName = "RESORDER_SEQ", allocationSize = 1)
-    private int ro_id;
+    private int id;
 
     @Column(nullable = false)
     private double total_amount;
@@ -38,12 +38,12 @@ public class RestaurantOrder {
     private String specifications;
 
     // Getters and setters
-    public int getRo_id() {
-        return ro_id;
+    public int getId() {
+        return id;
     }
 
-    public void setRo_id(int restaurantOrderId) {
-        this.ro_id = restaurantOrderId;
+    public void setId(int restaurantOrderId) {
+        this.id = restaurantOrderId;
     }
 
     public double getTotal_amount() {

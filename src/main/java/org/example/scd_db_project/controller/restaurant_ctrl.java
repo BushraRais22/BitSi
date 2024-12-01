@@ -1,5 +1,6 @@
 package org.example.scd_db_project.controller;
 
+import jakarta.servlet.http.HttpSession;
 import org.example.scd_db_project.model.Restaurant;
 import org.example.scd_db_project.model.RestaurantMenu;
 import org.example.scd_db_project.service.restaurant_service;
@@ -54,7 +55,7 @@ public class restaurant_ctrl {
     }
 
     @GetMapping("/restaurants/{id}/menu")
-    public String getMenuByRestaurant(@PathVariable int id, Model model) {
+    public String getMenuByRestaurant(@PathVariable int id, Model model, HttpSession session) {
         List<RestaurantMenu> menuItems = rm_service.findByRestaurantId(id);
         menuItems.forEach(item -> {
             System.out.println("Menu Item: " + item);
@@ -62,6 +63,7 @@ public class restaurant_ctrl {
         });
         model.addAttribute("menuItems", menuItems);
         model.addAttribute("restaurantId", id);
+        model.addAttribute("customerId",session.getAttribute("customerId"));
         return "restaurant_menu";
     }
 

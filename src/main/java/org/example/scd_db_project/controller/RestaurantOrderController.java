@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Date;
-import jakarta.servlet.http.HttpSession;
+
 import org.example.scd_db_project.model.*;
 import org.example.scd_db_project.repository.*;
 
@@ -33,6 +33,7 @@ public class RestaurantOrderController {
     @PostMapping("/cart/place-order")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> placeOrder(HttpSession session, @RequestParam int restaurantId, @RequestParam String specifications) {
+
         Integer customerId = (Integer) session.getAttribute("customerId");
         if (customerId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Customer not logged in! Please log in to place an order."));
@@ -84,6 +85,6 @@ public class RestaurantOrderController {
         // Clear the cart
         cart.clear();
         session.setAttribute("cart", cart); // Update session cart
-        return ResponseEntity.ok(Map.of("message", "Order placed successfully!", "orderId", order.getRo_id()));
+        return ResponseEntity.ok(Map.of("message", "Order placed successfully!", "orderId", order.getId()));
     }
 }

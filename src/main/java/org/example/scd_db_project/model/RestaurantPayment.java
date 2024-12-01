@@ -11,8 +11,8 @@ public class RestaurantPayment {
     private int p_id;
 
     @OneToOne
-    @JoinColumn(name = "ro_id" , foreignKey = @ForeignKey(name="fk_res_order_payment",
-            foreignKeyDefinition = "FOREIGN KEY (ro_id) REFERENCES restaurant_order(ro_id) DEFERRABLE INITIALLY DEFERRED"))
+    @JoinColumn(name = "id" , foreignKey = @ForeignKey(name="fk_res_order_payment",
+            foreignKeyDefinition = "FOREIGN KEY (id) REFERENCES restaurant_order(id) DEFERRABLE INITIALLY DEFERRED"))
     private RestaurantOrder restaurantorder;
 
     @Column(nullable = false)

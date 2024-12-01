@@ -8,11 +8,12 @@ public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "orderitem_seq_generator")
     @SequenceGenerator(name = "orderitem_seq_generator", sequenceName = "ORDERITEM_SEQ", allocationSize = 1)
-    private int orderitem_id;
+    @Column(name = "ORDERITEMID")
+    private int orderitemId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ro_id" , foreignKey = @ForeignKey(name="fk_order_item",
-            foreignKeyDefinition = "FOREIGN KEY (ro_id) REFERENCES restaurant_order(ro_id) DEFERRABLE INITIALLY DEFERRED"))
+    @JoinColumn(name = "id" , foreignKey = @ForeignKey(name="fk_order_item",
+            foreignKeyDefinition = "FOREIGN KEY (id) REFERENCES restaurant_order(id) DEFERRABLE INITIALLY DEFERRED"))
 
     private RestaurantOrder restaurantOrder;
 
@@ -26,12 +27,12 @@ public class OrderItem {
     private int quantity;
 
     // Getters and setters
-    public int getOrderitem_id() {
-        return orderitem_id;
+    public int getOrderitemId() {
+        return orderitemId;
     }
 
-    public void setOrderitem_id(int orderitemId) {
-        this.orderitem_id = orderitemId;
+    public void setOrderitemId(int orderitemId) {
+        this.orderitemId = orderitemId;
     }
 
     public RestaurantOrder getRestaurantOrder() {

@@ -20,6 +20,7 @@
 <body>
 <!-- Hidden field to pass restaurantId -->
 <input type="hidden" id="restaurant-info" th:data-restaurant-id="${restaurantId}" />
+<input type="hidden" id="customer-info" th:data-customer-id="${customerId}" />
 
 <div class="container">
     <!-- Menu Section -->
@@ -48,6 +49,7 @@
             </tr>
             </tbody>
         </table>
+        <button onclick="redirectToFeedback()">Feedback</button>
         <a href="/restaurant_ctrl/restaurants" onclick="confirmAndClearCart(event)">Back to Restaurants</a>
     </div>
     <!-- Cart Section -->
@@ -67,12 +69,16 @@
         <p>Total: <span id="cart-total">0</span></p>
         <textarea id="order-specifications" placeholder="Add any special instructions here..."></textarea>
         <button onclick="placeOrder()">Place Order</button>
-        <button onclick="window.location.href='/rating'">Feedback</button>
     </div>
 </div>
 
 <script>
     function addToCart(restaurantId, menuId, quantity) {
+        console.log("Restaurant ID: ", restaurantId, "Menu ID: ", menuId, "Quantity: ", quantity);  // Log the values
+        if (!restaurantId || !menuId) {
+            alert('Missing restaurant or menu ID');
+            return;
+        }
         fetch(`/cart/add?restaurantId=${restaurantId}&menuId=${menuId}&quantity=${quantity}`, {
             method: 'POST',
         })
@@ -119,6 +125,7 @@
         })
             .then(response => response.json()) // Ensure response is processed as JSON
             .then(data => {
+                console.log("Response Data:", data);
                 if (data.error) {
                     alert(data.error); // Show error message if present
                 } else {
@@ -157,6 +164,16 @@
         }
     }
 
+    function redirectToFeedback(){
+        const restaurantId=document.getElementById("restaurant-info").getAttribute("data-restaurant-id");
+        const customerId = document.getElementById("customer-info").getAttribute("data-customer-id");
+
+        if (customerId && restaurantId) {
+            window.location.href = `/rating?customerId=${customerId}&restaurantId=${restaurantId}`;
+        } else {
+            alert("Missing customer or restaurant ID");
+        }
+    }
     // Push a custom state to track navigation
     window.onload = function () {
         history.pushState(null, null, location.href);
