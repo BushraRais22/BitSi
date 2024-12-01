@@ -125,7 +125,7 @@
                     alert(data.message); // Success message
                     document.getElementById("order-specifications").value = ''; // Clear specifications
                     loadCart(); // Clear the cart after successful order
-                    window.location.href = `/payment?orderId=${data.orderId}`; // Redirect with orderId
+                    window.location.href = `locpayment/details/${data.orderId}`; // Redirect with orderId
                 }
             })
             .catch(error => {

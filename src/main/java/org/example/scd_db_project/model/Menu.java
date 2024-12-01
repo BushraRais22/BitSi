@@ -16,7 +16,7 @@ public class Menu {
     @Column(nullable = false)
     private String description;
 
-    // Getters and setters
+
     public int getId() {
         return id;
     }
