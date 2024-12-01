@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Home</title>
+</head>
+<body>
+<h1>Welcome to Food Ordering App</h1>
+<h2>Restaurants</h2>
+    <ul>
+        <li th:each="restaurant : ${restaurants}">
+            <a th:href="@{'/restaurant_ctrl/restaurants/' + ${restaurant.idd} + '/menu'}">
+                <strong th:text="${restaurant.r_name}"></strong>
+            </a>
+            <p>Location: <span th:text="${restaurant.location}"></span></p>
+            <p>Type: <span th:text="${restaurant.r_restaurant_type}"></span></p>
+        </li>
+    </ul>
+</body>
+</html>

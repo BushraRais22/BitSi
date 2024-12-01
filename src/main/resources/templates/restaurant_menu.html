@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Restaurant Menu</title>
+    <style>
+        .container {
+            display: flex;
+        }
+
+        .menu {
+            flex: 3;
+        }
+
+        .cart {
+            flex: 1;
+            margin-left: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Menu Section -->
+    <div class="menu">
+        <h1>Restaurant Menu</h1>
+        <table>
+            <thead>
+            <tr>
+                <th>Menu Name</th>
+                <th>Price</th>
+                <th>Availability</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${menuItems}">
+                <td th:text="${item.id.menu.name}">Menu Name</td>
+                <td th:text="${item.rm_price}">Price</td>
+                <td th:text="${item.rm_availability} ? 'Available' : 'Unavailable'">Availability</td>
+                <td>
+                    <button th:disabled="${!item.rm_availability}"
+                            th:attr="onclick=|addToCart(${item.id.restaurant.idd}, ${item.id.menu.id}, 1)|">
+                        Add to Cart
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <a href="/restaurant_ctrl/restaurants" onclick="confirmAndClearCart(event)">Back to Restaurants</a>
+    </div>
+
+    <!-- Cart Section -->
+    <div class="cart">
+        <h2>Cart</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Item</th>
+                <th>Quantity</th>
+                <th>Price</th>
+            </tr>
+            </thead>
+            <tbody id="cart-items">
+            </tbody>
+        </table>
+        <p>Total: <span id="cart-total">0</span></p>
+        <button onclick="placeOrder()">Place Order</button>
+    </div>
+</div>
+
+<script>
+    function addToCart(restaurantId, menuId, quantity) {
+        fetch(`/cart/add?restaurantId=${restaurantId}&menuId=${menuId}&quantity=${quantity}`, {
+            method: 'POST',
+        })
+            .then(response => response.json())
+            .then(cart => {
+                updateCartUI(cart);
+            })
+            .catch(error => console.error('Error adding to cart:', error));
+    }
+
+    function loadCart() {
+        fetch('/cart')
+            .then(response => response.json())
+            .then(cart => {
+                updateCartUI(cart);
+            })
+            .catch(error => console.error('Error loading cart:', error));
+    }
+
+    function updateCartUI(cart) {
+        const cartItems = document.getElementById('cart-items');
+        const cartTotal = document.getElementById('cart-total');
+        cartItems.innerHTML = '';
+        let total = 0;
+
+        cart.items.forEach(item => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${item.name}</td>
+                <td>${item.quantity}</td>
+                <td>${item.price}</td>
+            `;
+            cartItems.appendChild(row);
+            total += item.price * item.quantity;
+        });
+
+        cartTotal.textContent = total.toFixed(2);
+    }
+
+    function placeOrder() {
+        const restaurantId = /*[[${restaurantId}]]*/ 0; // Populated by Thymeleaf
+
+        fetch(`/cart/place-order?restaurantId=${restaurantId}`, {
+            method: 'POST'
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to place the order');
+                }
+                return response.text();
+            })
+            .then(data => {
+                alert(data);
+                loadCart(); // Clear the cart after successful order
+            })
+            .catch(error => console.error('Error placing order:', error));
+    }
+
+    function clearCart() {
+        fetch('/cart/clear', {
+            method: 'POST',
+        })
+            .then(response => {
+                if (!response.ok) {
+                    console.error('Failed to clear cart');
+                } else {
+                    updateCartUI({ items: [] });
+                }
+            })
+            .catch(error => console.error('Error clearing cart:', error));
+    }
+
+    function confirmAndClearCart(event) {
+        const confirmation = confirm("Are you sure you want to leave? Once you leave, your cart will be emptied.");
+        if (!confirmation) {
+            event.preventDefault(); // Prevent navigation if the user cancels
+        } else {
+            clearCart(); // Clear the cart if confirmed
+        }
+    }
+
+    // Push a custom state to track navigation
+    window.onload = function () {
+        history.pushState(null, null, location.href);
+        loadCart();
+    };
+
+    // Handle back button navigation
+    window.onpopstate = function () {
+        const confirmation = confirm("Are you sure you want to leave? Once you leave, your cart will be emptied.");
+        if (confirmation) {
+            clearCart();
+        } else {
+            history.pushState(null, null, location.href); // Re-push the current state to prevent navigation
+        }
+    };
+</script>
+</body>
+</html>

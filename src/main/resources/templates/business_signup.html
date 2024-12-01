@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Business Account Signup</title>
+    <script>
+        function toggleFields() {
+            const businessType = document.getElementById("businessType").value;
+            const restaurantFields = document.getElementById("restaurantFields");
+            const chefFields = document.getElementById("chefFields");
+
+            if (businessType === "Restaurant") {
+                restaurantFields.style.display = "block";
+                chefFields.style.display = "none";
+            } else if (businessType === "Chef") {
+                restaurantFields.style.display = "none";
+                chefFields.style.display = "block";
+            }
+        }
+        function updateLoginLink() {
+            const businessType = document.getElementById("businessType").value;
+            const loginLink = document.getElementById("loginLink");
+
+            if (businessType === "Restaurant") {
+                loginLink.href = "/restaurant_login"; // Redirect to restaurant login page
+            } else if (businessType === "Chef") {
+                loginLink.href = "/chef_login"; // Redirect to chef login page
+            }
+        }
+
+        // Call this function when the page loads
+        window.onload = function () {
+            toggleFields();// Ensure the fields match the default selection on load
+            updateLoginLink();
+            document.getElementById("businessType").addEventListener("change", function () {
+                toggleFields();
+                updateLoginLink();
+                const selectedType = this.value;
+                const form = document.getElementById("businessSignupForm");
+
+                if (selectedType === "Restaurant") {
+                    form.action = "/restaurant_ctrl/signup"; // Set form action for restaurants
+                } else if (selectedType === "Chef") {
+                    form.action = "/chef_ctrl/signup"; // Set form action for chefs
+                }
+            });
+        };
+    </script>
+
+</head>
+<body>
+<h1>Sign Up for Business Account</h1>
+<p>Already have an account? <a href="#" id="loginLink">Login</a></p>
+
+<form id="businessSignupForm" method="post" action="/restaurant_ctrl/signup">
+    <label for="businessType">Business Type:</label>
+    <select name="businessType" id="businessType" onchange="toggleFields()">
+        <option value="Restaurant" selected>Restaurant</option>
+        <option value="Chef">Chef</option>
+    </select><br>
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required><br>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required><br>
+
+    <!-- Restaurant-specific fields -->
+    <div id="restaurantFields">
+        <label for="r_name">Name:</label>
+        <input type="text" id="r_name" name="r_name"><br>
+
+        <label for="restaurant_type">Restaurant Type:</label>
+        <select name="restaurant_type" id="restaurant_type">
+            <option value="Commercial Kitchen">Commercial Kitchen</option>
+            <option value="Home Chef">Home Chef</option>
+        </select><br>
+
+        <label for="r_location">Location:</label>
+        <input type="text" id="r_location" name="r_location"><br>
+
+        <label for="r_phone">Phone:</label>
+        <input type="text" id="r_phone" name="r_phone"><br>
+    </div>
+
+    <!-- Chef-specific fields -->
+    <div id="chefFields" style="display: none;">
+        <label for="ch_firstname">First Name:</label>
+        <input type="text" id="ch_firstname" name="ch_firstname"><br>
+
+        <label for="ch_lastname">Last Name:</label>
+        <input type="text" id="ch_lastname" name="ch_lastname" required><br>
+
+        <label for="ch_phone">Phone:</label>
+        <input type="text" id="ch_phone" name="ch_phone"><br>
+
+        <label for="ch_speciality">Speciality:</label>
+        <input type="text" id="ch_speciality" name="ch_speciality"><br>
+    </div>
+    <button type="submit">Sign Up</button>
+</form>
+
+</body>
+</html>

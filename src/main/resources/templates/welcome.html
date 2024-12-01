@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Welcome</title>
+</head>
+<body>
+<h1>Welcome to BITSI!</h1>
+<p>Select your account type:</p>
+<button th:onclick="|window.location='/business_signup'|">Business Account</button>
+<button th:onclick="|window.location='/personal_signup'|">Personal Account</button>
+</body>
+</html>
