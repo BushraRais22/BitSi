@@ -29,9 +29,7 @@ public class RestaurantOrderController {
 
     @PostMapping("/cart/place-order")
     @ResponseBody
-    public String placeOrder(@ModelAttribute("cart") Cart cart,
-                             @RequestParam int restaurantId,
-                             HttpSession session) {
+    public String placeOrder(HttpSession session, @RequestParam int restaurantId) {
         Integer customerId = (Integer) session.getAttribute("customerId");
         if (customerId == null) {
             return "Customer not logged in! Please log in to place an order.";
@@ -49,6 +47,10 @@ public class RestaurantOrderController {
         Restaurant restaurant = restaurantRep.findById(restaurantId)
                 .orElseThrow(() -> new IllegalArgumentException("Restaurant not found with ID:" + restaurantId));
 
+        Cart cart = (Cart) session.getAttribute("cart");
+        if (cart == null || cart.getItems().isEmpty()) {
+            return "Cart is empty!";
+        }
         // Create and save RestaurantOrder
         RestaurantOrder order = new RestaurantOrder();
         order.setCustomer(customer);
@@ -59,25 +61,24 @@ public class RestaurantOrderController {
         restaurantOrderRep.save(order);
 
         // Save order items
-        for (CartItem cartItem : cart.getItems()) {
+
+        cart.getItems().forEach(item -> {
             OrderItem orderItem = new OrderItem();
             orderItem.setRestaurantOrder(order);
-
-            Menu menu = menuRep.findById(cartItem.getMenuId())
-                    .orElseThrow(() -> new IllegalArgumentException("Menu not found"));
-
+            Menu menu = menuRep.findById(item.getMenuId())
+                    .orElseThrow(() -> new RuntimeException("Menu not found"));
             RestaurantMenuId restaurantMenuId = new RestaurantMenuId(restaurant, menu);
             RestaurantMenu restaurantMenu = restaurantMenuRep.findById(restaurantMenuId)
-                    .orElseThrow(() -> new IllegalArgumentException("Restaurant menu item not found"));
+                    .orElseThrow(() -> new RuntimeException("Restaurant menu item not found"));
 
             orderItem.setMenu(restaurantMenu.getId().getMenu());
-            orderItem.setQuantity(cartItem.getQuantity());
+            orderItem.setQuantity(item.getQuantity());
             orderItemRep.save(orderItem);
-        }
+        });
 
         // Clear the cart
         cart.clear();
-
+        session.setAttribute("cart", cart); // Update session cart
         return "Order placed successfully!";
     }
 }

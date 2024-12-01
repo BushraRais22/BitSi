@@ -6,11 +6,9 @@
         .container {
             display: flex;
         }
-
         .menu {
             flex: 3;
         }
-
         .cart {
             flex: 1;
             margin-left: 20px;
@@ -20,6 +18,9 @@
     </style>
 </head>
 <body>
+<!-- Hidden field to pass restaurantId -->
+<input type="hidden" id="restaurant-info" th:data-restaurant-id="${restaurantId}" />
+
 <div class="container">
     <!-- Menu Section -->
     <div class="menu">
@@ -49,7 +50,6 @@
         </table>
         <a href="/restaurant_ctrl/restaurants" onclick="confirmAndClearCart(event)">Back to Restaurants</a>
     </div>
-
     <!-- Cart Section -->
     <div class="cart">
         <h2>Cart</h2>
@@ -75,18 +75,14 @@
             method: 'POST',
         })
             .then(response => response.json())
-            .then(cart => {
-                updateCartUI(cart);
-            })
+            .then(cart => updateCartUI(cart))
             .catch(error => console.error('Error adding to cart:', error));
     }
 
     function loadCart() {
         fetch('/cart')
             .then(response => response.json())
-            .then(cart => {
-                updateCartUI(cart);
-            })
+            .then(cart => updateCartUI(cart))
             .catch(error => console.error('Error loading cart:', error));
     }
 
@@ -95,24 +91,21 @@
         const cartTotal = document.getElementById('cart-total');
         cartItems.innerHTML = '';
         let total = 0;
-
         cart.items.forEach(item => {
             const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${item.name}</td>
-                <td>${item.quantity}</td>
-                <td>${item.price}</td>
-            `;
+            row.innerHTML = `<td>${item.name}</td><td>${item.quantity}</td><td>${item.price}</td>`;
             cartItems.appendChild(row);
             total += item.price * item.quantity;
         });
-
         cartTotal.textContent = total.toFixed(2);
     }
 
     function placeOrder() {
-        const restaurantId = /*[[${restaurantId}]]*/ 0; // Populated by Thymeleaf
-
+        const restaurantId = document.getElementById("restaurant-info").getAttribute("data-restaurant-id");
+        if (!restaurantId) {
+            alert("Restaurant ID is missing. Please try again.");
+            return;
+        }
         fetch(`/cart/place-order?restaurantId=${restaurantId}`, {
             method: 'POST'
         })
@@ -137,15 +130,14 @@
                 if (!response.ok) {
                     console.error('Failed to clear cart');
                 } else {
-                    updateCartUI({ items: [] });
+                    updateCartUI({items: []});
                 }
             })
             .catch(error => console.error('Error clearing cart:', error));
     }
 
     function confirmAndClearCart(event) {
-        const confirmation = confirm("Are you sure you want to leave? Once you leave, your cart will be emptied.");
-        if (!confirmation) {
+        if (!confirm("Are you sure you want to leave? Once you leave, your cart will be emptied.")) {
             event.preventDefault(); // Prevent navigation if the user cancels
         } else {
             clearCart(); // Clear the cart if confirmed
@@ -160,13 +152,13 @@
 
     // Handle back button navigation
     window.onpopstate = function () {
-        const confirmation = confirm("Are you sure you want to leave? Once you leave, your cart will be emptied.");
-        if (confirmation) {
+        if (confirm("Are you sure you want to leave? Once you leave, your cart will be emptied.")) {
             clearCart();
         } else {
             history.pushState(null, null, location.href); // Re-push the current state to prevent navigation
         }
     };
 </script>
+
 </body>
 </html>
