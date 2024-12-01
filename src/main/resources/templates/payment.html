@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Payment</title>
+</head>
+<body>
+<h1>ORDER SUMMARY</h1>
+<table>
+    <thead>
+    <tr>
+        <th>Item Name</th>
+        <th>Quantity</th>
+        <th>Price</th>
+        <th>Subtotal</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="item : ${orderItems}">
+        <td th:text="${item.menu.name}">Item Name</td>
+        <td th:text="${item.quantity}">Quantity</td>
+        <td th:text="${item.menu.restaurantMenu.price}">Price</td>
+        <td th:text="${item.quantity * item.menu.restaurantMenu.price}">Sub Total</td>
+    </tr>
+    </tbody>
+</table>
+<p>Total Amount: <span th:text="${totalAmount}">Total</span></p>
+<h2>Choose Payment Method</h2>
+<form action="/payment/process" method="post">
+    <input type="hidden" name="orderId" th:value="${orderId}" />
+    <input type="radio" id="card" name="paymentMethod" value="Card">
+    <label for="card">Credit/Debit Card</label><br>
+    <input type="radio" id="cash" name="paymentMethod" value="Cash">
+    <label for="cash">Cash</label><br>
+    <button type="submit">Make Payment</button>
+</form>
+</body>
+</html>
