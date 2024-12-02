@@ -2,10 +2,43 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Home</title>
+    <style>
+        #sidePanel {
+            width: 200px;
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            background: #f4f4f4;
+            padding: 20px;
+        }
+        #mainContent {
+            margin-left: 220px;
+            padding: 20px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+        li:last-child {
+            border-bottom: none;
+        }
+    </style>
 </head>
 <body>
-<h1>Welcome to Food Ordering App</h1>
-<h2>Restaurants</h2>
+<div id="sidePanel">
+    <ul>
+        <li><a href="/">Restaurants</a></li>
+        <li><a href="/chef_ctrl/chefs">Chefs</a></li>
+    </ul>
+</div>
+<div id="mainContent">
+    <h1>Welcome to Food Ordering App</h1>
+    <h2>Restaurants</h2>
     <ul>
         <li th:each="restaurant : ${restaurants}">
             <a th:href="@{'/restaurant_ctrl/restaurants/' + ${restaurant.idd} + '/menu'}">
@@ -15,5 +48,6 @@
             <p>Type: <span th:text="${restaurant.r_restaurant_type}"></span></p>
         </li>
     </ul>
+</div>
 </body>
 </html>

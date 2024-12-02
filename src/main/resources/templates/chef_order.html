@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Form</title>
+</head>
+<body>
+<h1>Place Your Order</h1>
+<form th:action="@{/chef_ctrl/placeOrder}" method="post">
+    <input type="hidden" name="chefId" th:value="${chefId}" />
+    <div>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required />
+    </div>
+    <div>
+        <label for="orderDetails">Order Details:</label>
+        <textarea id="orderDetails" name="orderDetails" rows="4" cols="50" required></textarea>
+    </div>
+    <div>
+        <label for="contact">Contact:</label>
+        <input type="text" id="contact" name="contact" required />
+    </div>
+    <div>
+        <label for="date">Delivery Date:</label>
+        <input type="date" id="date" name="date" required />
+    </div>
+    <div>
+        <label for="address">Address:</label>
+        <textarea id="address" name="address" rows="3" cols="50" required></textarea>
+    </div>
+    <div>
+        <button type="submit">Submit Order</button>
+    </div>
+</form>
+</body>
+</html>

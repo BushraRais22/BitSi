@@ -8,6 +8,8 @@ import org.example.scd_db_project.repository.chef_rep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class chef_service {
     @Autowired
@@ -36,6 +38,10 @@ public class chef_service {
             }
         }
         return null;
+    }
+    public List<Chef> getALlChefs(){
+        List<Chef> chefs=ch_rep.findAll();
+        return chefs;
     }
 
 }

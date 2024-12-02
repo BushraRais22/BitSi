@@ -81,7 +81,7 @@
                 <td><input type="checkbox" name="availability" th:checked="${menu.rm_availability}" /></td>
                 <td>
                     <form th:action="@{/restaurant_ctrl/updateMenu}" method="post">
-                        <input type="hidden" name="menuId" th:value="${menu.id.restaurant.idd + '-' + menu.id.menu.id}" />
+                        <input type="hidden" name="menuId" th:value="${menu.id}" />
                         <button type="submit">Update</button>
                     </form>
                 </td>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chefs</title>
+</head>
+<body>
+<h1>Welcome to Food Ordering App</h1>
+<h2>Chefs</h2>
+<ul>
+    <li th:each="chef :${chefs}">
+        <a th:href="@{'/chef_ctrl/chef_order/' + ${chef.ch_id}}">
+            <strong th:text="${chef.ch_firstname + ' ' + chef.ch_lastname}"></strong>
+        </a>
+        <p>Contact: <span th:text="${chef.email + ' | ' + chef.ch_phone}"></span></p>
+        <p>Speciality: <span th:text="${chef.speciality}"></span></p>
+    </li>
+</ul>
+</body>
+</html>
