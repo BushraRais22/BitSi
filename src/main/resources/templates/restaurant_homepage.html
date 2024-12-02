@@ -1,17 +1,48 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
 <h1>Welcome to the Home Page!</h1>
-<p th:if="${message}" th:text="${message}"></p>
-<script>
-    const message = /*[[${message}]]*/ '';
-    if (message) {
+<h1>Manage Orders</h1>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var message = /*[[${message}]]*/ 'default message';
+    if (message !== 'default message') {
         alert(message);
     }
+    /*]]>*/
 </script>
+
+<table>
+    <tr>
+        <th>Order ID</th>
+        <th>Date</th>
+        <th>Amount</th>
+        <th>Specifications</th>
+        <th>Status</th>
+        <th>Action</th>
+    </tr>
+    <tr th:each="order : ${orders}">
+        <td th:text="${order.id}"></td>
+        <td th:text="${#dates.format(order.ro_date,'dd-MM-yyyy')}"></td>
+        <td th:text="${order.total_amount}"></td>
+        <td th:text="${order.specifications}"></td>
+        <td th:text="${order.status}"></td>
+        <td>
+            <form th:action="@{/restaurant_ctrl/updateOrderStatus}" method="post">
+                <input type="hidden" name="orderId" th:value="${order.id}">
+                <select name="newStatus">
+                    <option value="Accepted">Accept</option>
+                    <option value="Rejected">Reject</option>
+                </select>
+                <button type="submit">Update</button>
+            </form>
+        </td>
+    </tr>
+</table>
+
 </body>
 </html>

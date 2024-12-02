@@ -55,8 +55,7 @@ public class customer_ctrl {
 
         // Redirect to home page after successful signup
         model.addAttribute("message", "Signup Successful");
-        return "home";
-    }
+        return "redirect:/restaurant_ctrl/restaurants";    }
 
 }
 
