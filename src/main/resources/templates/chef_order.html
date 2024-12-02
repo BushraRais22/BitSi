@@ -3,34 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <title>Order Form</title>
+    <style>
+        /* Styling for the side panel */
+        #sidePanel {
+            width: 200px;
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            background: #f4f4f4;
+            padding: 20px;
+        }
+        #mainContent {
+            margin-left: 220px;
+            padding: 20px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+        li:last-child {
+            border-bottom: none;
+        }
+    </style>
 </head>
 <body>
-<h1>Place Your Order</h1>
-<form th:action="@{/chef_ctrl/placeOrder}" method="post">
-    <input type="hidden" name="chefId" th:value="${chefId}" />
-    <div>
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required />
-    </div>
-    <div>
-        <label for="orderDetails">Order Details:</label>
-        <textarea id="orderDetails" name="orderDetails" rows="4" cols="50" required></textarea>
-    </div>
-    <div>
-        <label for="contact">Contact:</label>
-        <input type="text" id="contact" name="contact" required />
-    </div>
-    <div>
-        <label for="date">Delivery Date:</label>
-        <input type="date" id="date" name="date" required />
-    </div>
-    <div>
-        <label for="address">Address:</label>
-        <textarea id="address" name="address" rows="3" cols="50" required></textarea>
-    </div>
-    <div>
-        <button type="submit">Submit Order</button>
-    </div>
-</form>
+<div id="sidePanel">
+    <ul>
+        <li><a href="/chef_ctrl/placeOrder">Place Order</a></li> <!-- Link to place an order -->
+        <li><a th:href="@{'/chef_ctrl/review?customerId=' + ${customerId} + '&chefId=' + ${chefId} }">Feedback</a></li>
+    </ul>
+</div>
+
+<div id="mainContent">
+    <h1>Place Your Order</h1>
+    <form th:action="@{/chef_ctrl/placeOrder}" method="post">
+        <!-- Hidden input for chefId -->
+        <input type="hidden" name="chefId" th:value="${chefId}" />
+
+        <div>
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required />
+        </div>
+        <div>
+            <label for="orderDetails">Order Details:</label>
+            <textarea id="orderDetails" name="orderDetails" rows="4" cols="50" required></textarea>
+        </div>
+        <div>
+            <label for="contact">Contact:</label>
+            <input type="text" id="contact" name="contact" required />
+        </div>
+        <div>
+            <label for="date">Delivery Date:</label>
+            <input type="date" id="date" name="date" required />
+        </div>
+        <div>
+            <label for="address">Address:</label>
+            <textarea id="address" name="address" rows="3" cols="50" required></textarea>
+        </div>
+        <div>
+            <button type="submit">Submit Order</button>
+        </div>
+    </form>
+</div>
+
 </body>
 </html>

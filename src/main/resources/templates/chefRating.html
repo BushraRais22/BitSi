@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Rating</title>
+</head>
+<body>
+<h1>RATINGS AND REVIEWS</h1>
+<form th:action="@{/chef_ctrl/submit_review}" method="post">
+  <!-- Hidden fields to pass customer and restaurant IDs -->
+  <input type="hidden" id="customerId" name="customerId" th:value="${customerId}" />
+  <input type="hidden" id="chefId" name="chefId" th:value="${chefId}" />
+
+  <!-- Field for rating score -->
+  <label for="ratingScore">Rating Score (1 to 5):</label>
+  <select id="ratingScore" name="ratingScore">
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+  </select>
+
+  <!-- Field for review -->
+  <label for="reviewText">Review:</label>
+  <textarea id="reviewText" name="reviewText" rows="4" cols="50" placeholder="Enter your review here..."></textarea>
+
+  <!-- Submit button -->
+  <button type="submit">Submit Review</button>
+</form>
+</body>
+</html>
