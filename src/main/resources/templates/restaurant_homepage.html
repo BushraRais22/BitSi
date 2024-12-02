@@ -3,46 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <style>
+        #sidePanel {
+            width: 200px;
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            background: #f4f4f4;
+            padding: 20px;
+        }
+        #mainContent {
+            margin-left: 220px;
+            padding: 20px;
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+    </style>
 </head>
 <body>
-<h1>Welcome to the Home Page!</h1>
-<h1>Manage Orders</h1>
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    var message = /*[[${message}]]*/ 'default message';
-    if (message !== 'default message') {
-        alert(message);
+<div id="sidePanel">
+    <ul>
+        <li><a href="#" onclick="showSection('manageOrders')">Manage Orders</a></li>
+        <li><a href="#" onclick="showSection('manageMenus')">Manage Menus</a></li>
+    </ul>
+</div>
+<div id="mainContent">
+    <h1>Welcome to the Home Page!</h1>
+    <div id="manageOrders" class="content-section active">
+        <h2>Manage Orders</h2>
+        <table>
+            <tr>
+                <th>Order ID</th>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Specifications</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+            <tr th:each="order : ${orders}">
+                <td th:text="${order.id}"></td>
+                <td th:text="${#dates.format(order.ro_date,'dd-MM-yyyy')}"></td>
+                <td th:text="${order.total_amount}"></td>
+                <td th:text="${order.specifications}"></td>
+                <td th:text="${order.status}"></td>
+                <td>
+                    <form th:action="@{/restaurant_ctrl/updateOrderStatus}" method="post">
+                        <input type="hidden" name="orderId" th:value="${order.id}">
+                        <select name="newStatus">
+                            <option value="Accepted">Accept</option>
+                            <option value="Rejected">Reject</option>
+                        </select>
+                        <button type="submit">Update</button>
+                    </form>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="manageMenus" class="content-section">
+        <h2>Manage Menus</h2>
+        <table>
+            <tr>
+                <th>Menu ID</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Availability</th>
+                <th>Action</th>
+            </tr>
+            <tr th:each="menu : ${menus}">
+                <td th:text="${menu.id.restaurant.idd + '-' + menu.id.menu.id}">Menu ID</td>
+                <td th:text="${menu.id.menu.name}">Menu Name</td>
+                <td><input type="text" name="price" th:value="${menu.rm_price}" /></td>
+                <td><input type="checkbox" name="availability" th:checked="${menu.rm_availability}" /></td>
+                <td>
+                    <form th:action="@{/restaurant_ctrl/updateMenu}" method="post">
+                        <input type="hidden" name="menuId" th:value="${menu.id.restaurant.idd + '-' + menu.id.menu.id}" />
+                        <button type="submit">Update</button>
+                    </form>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<script>
+    function showSection(sectionId) {
+        var sections = document.querySelectorAll('.content-section');
+        sections.forEach(function(section) {
+            section.classList.remove('active');
+        });
+        var activeSection = document.getElementById(sectionId);
+        if (activeSection) {
+            activeSection.classList.add('active');
+        }
     }
-    /*]]>*/
 </script>
-
-<table>
-    <tr>
-        <th>Order ID</th>
-        <th>Date</th>
-        <th>Amount</th>
-        <th>Specifications</th>
-        <th>Status</th>
-        <th>Action</th>
-    </tr>
-    <tr th:each="order : ${orders}">
-        <td th:text="${order.id}"></td>
-        <td th:text="${#dates.format(order.ro_date,'dd-MM-yyyy')}"></td>
-        <td th:text="${order.total_amount}"></td>
-        <td th:text="${order.specifications}"></td>
-        <td th:text="${order.status}"></td>
-        <td>
-            <form th:action="@{/restaurant_ctrl/updateOrderStatus}" method="post">
-                <input type="hidden" name="orderId" th:value="${order.id}">
-                <select name="newStatus">
-                    <option value="Accepted">Accept</option>
-                    <option value="Rejected">Reject</option>
-                </select>
-                <button type="submit">Update</button>
-            </form>
-        </td>
-    </tr>
-</table>
-
 </body>
 </html>

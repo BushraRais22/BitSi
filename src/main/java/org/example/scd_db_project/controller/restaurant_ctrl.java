@@ -3,6 +3,7 @@ package org.example.scd_db_project.controller;
 import jakarta.servlet.http.HttpSession;
 import org.example.scd_db_project.model.Restaurant;
 import org.example.scd_db_project.model.RestaurantMenu;
+import org.example.scd_db_project.model.RestaurantMenuId;
 import org.example.scd_db_project.model.RestaurantOrder;
 import org.example.scd_db_project.service.restaurant_service;
 import org.example.scd_db_project.service.restaurantmenu_service;
@@ -77,13 +78,16 @@ public class restaurant_ctrl {
             return "redirect:/restaurant_ctrl/login";
         }
         List<RestaurantOrder> orders =r_service.getOrdersByRestaurant(restaurantId);
+        List<RestaurantMenu> menus = rm_service.getMenusByRestaurant(restaurantId);
         model.addAttribute("orders", orders);
+        model.addAttribute("menus", menus);
         return "restaurant_homepage";
     }
     @PostMapping("/updateOrderStatus")
     public String updateOrderStatus(@RequestParam("orderId") int orderID,
                                     @RequestParam("newStatus") String newStatus,
-                                    RedirectAttributes redirectAttributes) {
+                                    RedirectAttributes redirectAttributes,
+                                    HttpSession session) {
         try{
             r_service.updateOrderStatus(orderID,newStatus);
             redirectAttributes.addFlashAttribute("message", "Order status updated successfully");
@@ -92,5 +96,37 @@ public class restaurant_ctrl {
         }
         return "redirect:/restaurant_ctrl/orders";
     }
+
+    //manage menus
+    @GetMapping("/manageMenus")
+    public String manageMenus(HttpSession session, Model model) {
+        Integer restaurantId = (Integer) session.getAttribute("restaurantId");
+        if (restaurantId == null) {
+            return "redirect:/restaurant_ctrl/login";
+        }
+        List<RestaurantMenu> menus = rm_service.getMenusByRestaurant(restaurantId);
+        List<RestaurantOrder> orders = r_service.getOrdersByRestaurant(restaurantId);
+
+        model.addAttribute("menus", menus);
+        model.addAttribute("orders", orders); // Make sure to add this if not already included
+        return "restaurant_homepage"; // View for managing menus
+    }
+
+    @PostMapping("/updateMenu")
+    public String updateMenu(@RequestParam("menuId") RestaurantMenuId menuId,
+                             @RequestParam("price") double price,
+                             @RequestParam("availability") boolean availability,
+                             RedirectAttributes redirectAttributes,
+                             HttpSession session) {
+        try {
+            rm_service.updateMenuDetails(menuId, price, availability);
+            redirectAttributes.addFlashAttribute("message", "Menu updated successfully!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("message", "Error updating menu.");
+        }
+        return "redirect:/restaurant_ctrl/manageMenus";
+    }
+
+
 
 }
