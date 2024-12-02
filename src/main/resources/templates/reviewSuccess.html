@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Review Submitted </title>
+</head>
+<body>
+<h1>Thank you for the feedback</h1>
+<p th:if="${message}" th:text="${message}"></p>
+<a th:href="@{/restaurant_ctrl/restaurants}">Return to Homepage</a>
+</body>
+</html>

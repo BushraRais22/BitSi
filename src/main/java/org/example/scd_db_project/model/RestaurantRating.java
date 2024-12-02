@@ -10,11 +10,11 @@ public class RestaurantRating {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "resrating_seq_generator")
     @SequenceGenerator(name = "resrating_seq_generator", sequenceName = "RESRATING_SEQ", allocationSize = 1)
-    private int rating_id;
+        private int rating_id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "r_id" , foreignKey = @ForeignKey(name="fk_res_rating",
-            foreignKeyDefinition = "FOREIGN KEY (r_id) REFERENCES restaurant(r_id) DEFERRABLE INITIALLY DEFERRED"))
+            foreignKeyDefinition = "FOREIGN KEY (r_id) REFERENCES restaurant(idd) DEFERRABLE INITIALLY DEFERRED"))
 
     private Restaurant restaurant;
 

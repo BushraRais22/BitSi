@@ -18,9 +18,8 @@
     </style>
 </head>
 <body>
-<!-- Hidden field to pass restaurantId -->
-<input type="hidden" id="restaurant-info" th:data-restaurant-id="${restaurantId}" />
-<input type="hidden" id="customer-info" th:data-customer-id="${customerId}" />
+<input type="hidden" id="restaurant-info" th:value="${restaurantId}" />
+<input type="hidden" id="customer-info" th:value="${customerId}" />
 
 <div class="container">
     <!-- Menu Section -->
@@ -165,11 +164,12 @@
     }
 
     function redirectToFeedback(){
-        const restaurantId=document.getElementById("restaurant-info").getAttribute("data-restaurant-id");
-        const customerId = document.getElementById("customer-info").getAttribute("data-customer-id");
+        const restaurantId = document.getElementById("restaurant-info").value;
+        const customerId = document.getElementById("customer-info").value;
+        console.log("Redirecting to feedback with Customer ID: ", customerId, " and Restaurant ID: ", restaurantId); // Log the values
 
         if (customerId && restaurantId) {
-            window.location.href = `/rating?customerId=${customerId}&restaurantId=${restaurantId}`;
+            window.location.href = `/rating_ctrl/rating?customerId=${customerId}&restaurantId=${restaurantId}`;
         } else {
             alert("Missing customer or restaurant ID");
         }
