@@ -1,17 +1,77 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Title</title>
+  <title>Chef Homepage</title>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const message = /*[[${message}]]*/ 'default message if not present';
+      if (message && message !== 'default message if not present') {
+        alert(message);
+      }
+    });
+  </script>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f3f4f6;
+      color: #333;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #4A90E2;
+    }
+
+    .profile-container {
+      background: white;
+      margin: 20px auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      width: 80%;
+      max-width: 600px;
+    }
+
+    p {
+      font-size: 16px;
+      line-height: 1.5;
+      color: #666;
+    }
+
+    strong {
+      color: #333;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin-top: 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: block;
+      width: 200px;
+      margin: 20px auto;
+      text-align: center;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
 </head>
 <body>
-<h1>Welcome to the Home Page!</h1>
-<p th:if="${message}" th:text="${message}"></p>
-<script>
-  const message = /*[[${message}]]*/ '';
-  if (message) {
-    alert(message);
-  }
-</script>
+<h1>Welcome, <span th:text="${chef.ch_firstname + ' ' + chef.ch_lastname}">Chef Name</span>!</h1>
+<div class="profile-container">
+  <h2>Your Profile Details</h2>
+  <p><strong>Email:</strong> <span th:text="${chef.email}">chef@example.com</span></p>
+  <p><strong>Phone:</strong> <span th:text="${chef.ch_phone}">000-000-0000</span></p>
+  <p><strong>Speciality:</strong> <span th:text="${chef.speciality}">Speciality</span></p>
+</div>
+<button th:onclick="|window.location='/business_signup'|">Back</button>
 </body>
 </html>

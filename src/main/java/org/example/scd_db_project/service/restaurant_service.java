@@ -4,6 +4,7 @@ import org.example.scd_db_project.model.Restaurant;
 import org.example.scd_db_project.model.RestaurantOrder;
 import org.example.scd_db_project.model.User;
 import org.example.scd_db_project.repository.restaurant_rep;
+import org.example.scd_db_project.repository.restaurantorder_rep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,12 +15,12 @@ public class restaurant_service {
     @Autowired
     private restaurant_rep r_rep;
     @Autowired
-    private org.example.scd_db_project.repository.restaurantorder_rep restaurantorder_rep;
+    private restaurantorder_rep restaurantorder_rep;
 
     public boolean CheckEmail(String email) {
         return r_rep.findByEmail(email).isPresent();
     }
-    public void aadRestaurant(String email, int password, String name, String location, String phone,String restaurant_type){
+    public Restaurant aadRestaurant(String email, int password, String name, String location, String phone,String restaurant_type){
         Restaurant r=new Restaurant();
         r.setR_name(name);
         r.setEmail(email);
@@ -30,8 +31,8 @@ public class restaurant_service {
         User u=new User();
         u.setUser_id(3);
         r.setUser(u);
-        r_rep.save(r);
-        System.out.println("Restaurant added: " + r);
+        return r_rep.save(r);
+
     }
         public Restaurant validateLogin(String email, int password) {
             if(r_rep.findByEmail(email).isPresent()){
@@ -50,6 +51,7 @@ public class restaurant_service {
     public List<RestaurantOrder> getOrdersByRestaurant(Integer restaurant_id) {
         return restaurantorder_rep.findByRestaurantIdd(restaurant_id);
     }
+
     public void updateOrderStatus(int orderId, String newStatus) {
         RestaurantOrder order = restaurantorder_rep.findById(orderId).orElseThrow(()-> new IllegalStateException("Order Not Found")    );
         order.setStatus(newStatus);

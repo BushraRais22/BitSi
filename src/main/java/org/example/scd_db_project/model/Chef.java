@@ -33,7 +33,6 @@ public class Chef {
             foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES users(user_id) DEFERRABLE INITIALLY DEFERRED"))
     private User user;
 
-    // Getters and setters
     public int getCh_id() {
         return ch_id;
     }

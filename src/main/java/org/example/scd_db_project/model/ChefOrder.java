@@ -23,8 +23,8 @@ public class ChefOrder {
     private Date co_date;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ch_id" , foreignKey = @ForeignKey(name="fk_chef_order",
-            foreignKeyDefinition = "FOREIGN KEY (ch_id) REFERENCES chef(ch_id) DEFERRABLE INITIALLY DEFERRED"))
+    @JoinColumn(name = "id" , foreignKey = @ForeignKey(name="fk_chef_order",
+            foreignKeyDefinition = "FOREIGN KEY (id) REFERENCES chef(ch_id) DEFERRABLE INITIALLY DEFERRED"))
 
     private Chef chef;
 

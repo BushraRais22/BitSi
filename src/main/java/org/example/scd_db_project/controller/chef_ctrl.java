@@ -42,16 +42,18 @@ public class chef_ctrl {
             model.addAttribute("message","Email Already Exists");
             return "business_signup";
         }
-        chefservice.aadchef(email, password, first_name, last_name, phone, speciality);
-        model.addAttribute("message","Signup Successful");
+        Chef chef=chefservice.aadchef(email, password, first_name, last_name, phone, speciality);
+        model.addAttribute("message","YOUR PROFILE HAS BEEN CREATED");
+        model.addAttribute("chef",chef) ;
         return "chef_homepage";
     }
     @PostMapping("/login")
-    public String login(@RequestParam("email") String email, @RequestParam("password") int password, Model model) {
+    public String login(@RequestParam("email") String email, @RequestParam("password") int password, Model model,HttpSession session) {
         Chef c = chefservice.validateLogin(email, password);
         if (c != null) {
+            session.setAttribute("chefId", c.getCh_id());
             model.addAttribute("message", "Login Successful");
-            return "chef_homepage";
+            return "redirect:/chef_ctrl/orders";
         } else {
             model.addAttribute("message", "Login Failed");
             return "chef_login";
@@ -123,10 +125,10 @@ public class chef_ctrl {
     {
 
         try{
-            System.out.println("Received customerId: " + customerId);
-            System.out.println("Received chefId: " + chefId);
-            System.out.println("Received ratingScore: " + ratingScore);
-            System.out.println("Received reviewText: " + reviewText);
+//            System.out.println("Received customerId: " + customerId);
+//            System.out.println("Received chefId: " + chefId);
+//            System.out.println("Received ratingScore: " + ratingScore);
+//            System.out.println("Received reviewText: " + reviewText);
 
             ChefRating  chefRating=new ChefRating();
             Customer customer=c_rep.findById(customerId).orElseThrow(() -> new IllegalArgumentException("invalid customer id"));
@@ -148,6 +150,29 @@ public class chef_ctrl {
     public String feedbacksuccesspage(Model model){
         return "feedbackSuccess";
     }
-//
+    @GetMapping("/orders")
+    public String showOrders(HttpSession session, Model model) {
+        Integer chefId= (Integer) session.getAttribute("chefId");
+        if(chefId==null){
+            return "/chef_login";
+        }
+        List<ChefOrder> orders =chefservice.getOrdersByChef(chefId);
+        model.addAttribute("orders", orders);
+        return "manage";
+    }
+
+    @PostMapping("/updateOrderStatus")
+    public String updateOrderStatus(@RequestParam("orderId") int orderID,
+                                    @RequestParam("newStatus") String newStatus,
+                                    RedirectAttributes redirectAttributes,
+                                    HttpSession session) {
+        try{
+            chefservice.updateOrderStatus(orderID,newStatus);
+            redirectAttributes.addFlashAttribute("message", "Order status updated successfully");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("message", "Failed to update order status");
+        }
+        return "redirect:/chef_ctrl/orders";
+    }
 
 }

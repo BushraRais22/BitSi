@@ -6,8 +6,6 @@ import java.util.List;
 public class Cart {
     private List<CartItem> items = new ArrayList<>();
 
-
-
     public void addItem(CartItem item) {
         for (CartItem existingItem : items) {
             if (existingItem.getMenuId() == item.getMenuId()) {

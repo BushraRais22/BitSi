@@ -1,7 +1,58 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
     <title>Business Account Signup</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f8;
+            color: #333;
+            padding: 20px;
+        }
+        h1 {
+            color: #4A90E2;
+        }
+        form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            width: 400px;
+            margin: 20px auto;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+            color: #666;
+        }
+        input, select {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            float: right;
+        }
+        button:hover {
+            background-color: #4cae4c;
+        }
+        #loginLink {
+            color: #4A90E2;
+            display: inline-block;
+            margin-top: 20px;
+        }
+    </style>
     <script>
         function toggleFields() {
             const businessType = document.getElementById("businessType").value;
@@ -11,41 +62,36 @@
             if (businessType === "Restaurant") {
                 restaurantFields.style.display = "block";
                 chefFields.style.display = "none";
+                Array.from(chefFields.querySelectorAll("input, select")).forEach(input => input.required = false);
+                Array.from(restaurantFields.querySelectorAll("input, select")).forEach(input => input.required = true);
             } else if (businessType === "Chef") {
                 restaurantFields.style.display = "none";
                 chefFields.style.display = "block";
+                Array.from(chefFields.querySelectorAll("input, select")).forEach(input => input.required = true);
+                Array.from(restaurantFields.querySelectorAll("input, select")).forEach(input => input.required = false);
             }
         }
+
         function updateLoginLink() {
             const businessType = document.getElementById("businessType").value;
             const loginLink = document.getElementById("loginLink");
 
             if (businessType === "Restaurant") {
-                loginLink.href = "/restaurant_login"; // Redirect to restaurant login page
+                loginLink.href = "/restaurant_login";
             } else if (businessType === "Chef") {
-                loginLink.href = "/chef_login"; // Redirect to chef login page
+                loginLink.href = "/chef_login";
             }
         }
 
-        // Call this function when the page loads
         window.onload = function () {
-            toggleFields();// Ensure the fields match the default selection on load
+            toggleFields();
             updateLoginLink();
             document.getElementById("businessType").addEventListener("change", function () {
                 toggleFields();
                 updateLoginLink();
-                const selectedType = this.value;
-                const form = document.getElementById("businessSignupForm");
-
-                if (selectedType === "Restaurant") {
-                    form.action = "/restaurant_ctrl/signup"; // Set form action for restaurants
-                } else if (selectedType === "Chef") {
-                    form.action = "/chef_ctrl/signup"; // Set form action for chefs
-                }
             });
         };
     </script>
-
 </head>
 <body>
 <h1>Sign Up for Business Account</h1>
@@ -98,6 +144,5 @@
     </div>
     <button type="submit">Sign Up</button>
 </form>
-
 </body>
 </html>

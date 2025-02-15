@@ -3,15 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <title>Rating</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        h1 {
+            color: #5a5a5a;
+            text-align: center;
+        }
+        form {
+            background-color: #fff;
+            max-width: 500px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        label {
+            display: block;
+            margin: 15px 0 5px;
+            color: #666;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="email"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: block;
+            width: 100%;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body>
 <h1>RATINGS AND REVIEWS</h1>
 <form th:action="@{/rating_ctrl/submit_review}" method="post">
-    <!-- Hidden fields to pass customer and restaurant IDs -->
     <input type="hidden" id="customerId" name="customerId" th:value="${customerId}" />
     <input type="hidden" id="restaurantId" name="restaurantId" th:value="${restaurantId}" />
 
-    <!-- Field for rating score -->
     <label for="ratingScore">Rating Score (1 to 5):</label>
     <select id="ratingScore" name="ratingScore">
         <option value="1">1</option>
@@ -21,11 +71,9 @@
         <option value="5">5</option>
     </select>
 
-    <!-- Field for review -->
     <label for="reviewText">Review:</label>
     <textarea id="reviewText" name="reviewText" rows="4" cols="50" placeholder="Enter your review here..."></textarea>
 
-    <!-- Submit button -->
     <button type="submit">Submit Review</button>
 </form>
 </body>

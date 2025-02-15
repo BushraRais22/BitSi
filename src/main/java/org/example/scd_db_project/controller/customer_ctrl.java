@@ -41,19 +41,15 @@ public class customer_ctrl {
             @RequestParam("phone_no") String phoneNo,
             @RequestParam("email") String email,
             @RequestParam("password") int password,
-            Model model) {
+            Model model, HttpSession session) {
 
-
-        // Check if the user already exists
         if (c_service.checkIfEmailExists(email)) {
             model.addAttribute("message", "Email already exists!");
-            return "personal_signup"; // Return back to signup page
+            return "personal_signup";
         }
 
-        // Add user to the database
-        c_service.addCustomer(firstname, lastname, houseNo, streetNo, area, phoneNo, email, password);
-
-        // Redirect to home page after successful signup
+        Customer customer =c_service.addCustomer(firstname, lastname, houseNo, streetNo, area, phoneNo, email, password);
+        session.setAttribute("customerId", customer.getC_id());
         model.addAttribute("message", "Signup Successful");
         return "redirect:/restaurant_ctrl/restaurants";    }
 

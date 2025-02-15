@@ -32,20 +32,17 @@ public class RestaurantOrderController {
 
     @PostMapping("/cart/place-order")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> placeOrder(HttpSession session, @RequestParam int restaurantId, @RequestParam String specifications) {
-
+    public ResponseEntity<Map<String, Object>> placeOrder(HttpSession session, @RequestParam("restaurantId") int restaurantId, @RequestParam("specifications") String specifications) {
+        System.out.println("Received restaurantId: " + restaurantId);
+        System.out.println("Received specifications: " + specifications);
         Integer customerId = (Integer) session.getAttribute("customerId");
         if (customerId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Customer not logged in! Please log in to place an order."));
         }
-
-
-        // Log the received IDs
         System.out.println("Customer ID: " + customerId);
         System.out.println("Restaurant ID: " + restaurantId);
 
 
-        // Fetch customer and restaurant
         Customer customer = customerRep.findById(customerId)
                 .orElseThrow(() -> new IllegalArgumentException("Customer not found"));
 
@@ -56,7 +53,6 @@ public class RestaurantOrderController {
         if (cart == null || cart.getItems().isEmpty()) {
             return ResponseEntity.badRequest().body(Map.of("error", "Cart is empty!"));
         }
-        // Create and save RestaurantOrder
         RestaurantOrder order = new RestaurantOrder();
         order.setCustomer(customer);
         order.setRestaurant(restaurant);
@@ -66,7 +62,6 @@ public class RestaurantOrderController {
         order.setSpecifications(specifications);
         restaurantOrderRep.save(order);
 
-        // Save order items
 
         cart.getItems().forEach(item -> {
             OrderItem orderItem = new OrderItem();
@@ -76,15 +71,13 @@ public class RestaurantOrderController {
             RestaurantMenuId restaurantMenuId = new RestaurantMenuId(restaurant, menu);
             RestaurantMenu restaurantMenu = restaurantMenuRep.findById(restaurantMenuId)
                     .orElseThrow(() -> new RuntimeException("Restaurant menu item not found"));
-
             orderItem.setMenu(restaurantMenu.getId().getMenu());
             orderItem.setQuantity(item.getQuantity());
             orderItemRep.save(orderItem);
         });
 
-        // Clear the cart
         cart.clear();
-        session.setAttribute("cart", cart); // Update session cart
+        session.setAttribute("cart", cart);
         return ResponseEntity.ok(Map.of("message", "Order placed successfully!", "orderId", order.getId()));
     }
 }

@@ -30,14 +30,11 @@ public class CartController {
                           @RequestParam int restaurantId,
                           @RequestParam int quantity) {
 
-        // Retrieve or initialize the cart from the session
         Cart cart = (Cart) session.getAttribute("cart");
         if (cart == null) {
             cart = new Cart();
             session.setAttribute("cart", cart);
         }
-
-        // Create RestaurantMenuId using the restaurant and menu IDs
         Restaurant restaurant = restaurant_rep.findById(restaurantId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid restaurant ID: " + restaurantId));
 
@@ -46,34 +43,32 @@ public class CartController {
 
         RestaurantMenuId restaurantMenuId = new RestaurantMenuId(restaurant, menu);
 
-        // Fetch the menu item from the database
         RestaurantMenu rm = restaurantmenu_repository.findById(restaurantMenuId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid menu item: " + menuId));
 
-        // Add the item to the cart
         cart.addItem(new CartItem(menuId, rm.getId().getMenu().getName(), rm.getRm_price(), quantity));
 
-        return cart; // Return the updated cart as JSON
+        return cart;
     }
 
     @GetMapping("/cart")
     @ResponseBody
     public Cart viewCart(HttpSession session) {
-        // Retrieve the cart from the session
+
         Cart cart = (Cart) session.getAttribute("cart");
         if (cart == null) {
             cart = new Cart();
         }
-        return cart; // Return the cart as JSON
+        return cart;
     }
     @PostMapping("/cart/clear")
     @ResponseBody
     public void clearCart(HttpSession session) {
         Cart cart = (Cart) session.getAttribute("cart");
         if (cart != null) {
-            cart.clear(); // Clear all items in the cart
+            cart.clear();
         }
-        session.setAttribute("cart", null); // Optionally remove the cart from the session
+        session.setAttribute("cart", null);
     }
 
 }

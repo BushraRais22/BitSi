@@ -21,13 +21,11 @@ public class customer_Service {
         }
        return null;
     }
-    // Check if the email already exists
     public boolean checkIfEmailExists(String email) {
         return c_rep.findByEmail(email).isPresent();
     }
 
-    // Add a new customer
-    public void addCustomer(String firstname, String lastname, String houseNo, String streetNo, String area,
+    public Customer addCustomer(String firstname, String lastname, String houseNo, String streetNo, String area,
                             String phoneNo, String email, int password) {
         Customer new_c = new Customer();
         new_c.setC_firstname(firstname);
@@ -39,11 +37,10 @@ public class customer_Service {
         new_c.setEmail(email);
         new_c.setPasswordd(password);
 
-        // Assign a default user_id (e.g., 1 as per your requirement)
         User u = new User();
-        u.setUser_id(1); // Assuming you have a User class with a user_id field
+        u.setUser_id(1);
         new_c.setU(u);
 
-        c_rep.save(new_c);
+        return c_rep.save(new_c);
     }
 }

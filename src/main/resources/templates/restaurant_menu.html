@@ -3,26 +3,83 @@
 <head>
     <title>Restaurant Menu</title>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
         .container {
             display: flex;
+            justify-content: space-between;
+        }
+        .menu, .cart {
+            padding: 20px;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            background-color: white;
         }
         .menu {
             flex: 3;
+            margin-right: 20px;
         }
         .cart {
             flex: 1;
-            margin-left: 20px;
-            border: 1px solid #ccc;
-            padding: 10px;
+        }
+        h1, h2 {
+            color: #007bff;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            text-align: left;
+            padding: 8px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        th {
+            background-color: #f0f3f5;
+        }
+        button {
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: default;
+        }
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ced4da;
+            margin-top: 10px;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
 <input type="hidden" id="restaurant-info" th:value="${restaurantId}" />
-<input type="hidden" id="customer-info" th:value="${customerId}" />
+<input type="hidden" id="customer-info" value="${customerId}" />
 
 <div class="container">
-    <!-- Menu Section -->
     <div class="menu">
         <h1>Restaurant Menu</h1>
         <table>
@@ -51,7 +108,6 @@
         <button onclick="redirectToFeedback()">Feedback</button>
         <a href="/restaurant_ctrl/restaurants" onclick="confirmAndClearCart(event)">Back to Restaurants</a>
     </div>
-    <!-- Cart Section -->
     <div class="cart">
         <h2>Cart</h2>
         <table>
@@ -73,7 +129,7 @@
 
 <script>
     function addToCart(restaurantId, menuId, quantity) {
-        console.log("Restaurant ID: ", restaurantId, "Menu ID: ", menuId, "Quantity: ", quantity);  // Log the values
+        console.log("Restaurant ID: ", restaurantId, "Menu ID: ", menuId, "Quantity: ", quantity);
         if (!restaurantId || !menuId) {
             alert('Missing restaurant or menu ID');
             return;
@@ -108,65 +164,49 @@
     }
 
     function placeOrder() {
-        const restaurantId = document.getElementById("restaurant-info").getAttribute("data-restaurant-id");
-        const cartItems = document.getElementById("cart-items").children.length; // Get the count of cart items
-        const specifications = document.getElementById("order-specifications").value; // Get the specifications from the textarea
+        const restaurantId = document.getElementById("restaurant-info").value;
+        const cartItems = document.getElementById("cart-items").children.length;
+        const specifications = encodeURIComponent(document.getElementById("order-specifications").value.trim());
+        const url = `/cart/place-order?restaurantId=${restaurantId}&specifications=${specifications}`;
+
         if (!restaurantId) {
             alert("Restaurant ID is missing. Please try again.");
             return;
         }
-        if (cartItems === 0) { // Check if the cart is empty
+        if (cartItems === 0) {
             alert("Your cart is empty. Add items to your cart before placing an order.");
             return;
         }
-        fetch(`/cart/place-order?restaurantId=${restaurantId}&specifications=${encodeURIComponent(specifications)}`, {
-            method: 'POST'
+
+        fetch(url, {
+            method: 'POST',
         })
-            .then(response => response.json()) // Ensure response is processed as JSON
+            .then(response => response.json())
             .then(data => {
-                console.log("Response Data:", data);
-                if (data.error) {
-                    alert(data.error); // Show error message if present
-                } else {
-                    alert(data.message); // Success message
-                    document.getElementById("order-specifications").value = ''; // Clear specifications
-                    loadCart(); // Clear the cart after successful order
-                    window.location.href = `locpayment/details/${data.orderId}`; // Redirect with orderId
+                if(data.error){
+                    alert(data.error);
+                }else{
+                    alert(data.message || "Order placed successfully!");
+                    window.location.href = `/payment/details/${data.orderId}`;
                 }
             })
             .catch(error => {
                 console.error('Error placing order:', error);
-                alert('Failed to place the order. Please try again.'); // Show error alert
+                alert('Failed to place the order. Please try again.');
             });
-    }
-
-
-    function clearCart() {
-        fetch('/cart/clear', {
-            method: 'POST',
-        })
-            .then(response => {
-                if (!response.ok) {
-                    console.error('Failed to clear cart');
-                } else {
-                    updateCartUI({items: []});
-                }
-            })
-            .catch(error => console.error('Error clearing cart:', error));
     }
 
     function confirmAndClearCart(event) {
         if (!confirm("Are you sure you want to leave? Once you leave, your cart will be emptied.")) {
-            event.preventDefault(); // Prevent navigation if the user cancels
+            event.preventDefault();
         } else {
-            clearCart(); // Clear the cart if confirmed
+            clearCart();
         }
     }
 
     function redirectToFeedback(){
         const restaurantId = document.getElementById("restaurant-info").value;
         const customerId = document.getElementById("customer-info").value;
-        console.log("Redirecting to feedback with Customer ID: ", customerId, " and Restaurant ID: ", restaurantId); // Log the values
 
         if (customerId && restaurantId) {
             window.location.href = `/rating_ctrl/rating?customerId=${customerId}&restaurantId=${restaurantId}`;
@@ -174,18 +214,16 @@
             alert("Missing customer or restaurant ID");
         }
     }
-    // Push a custom state to track navigation
     window.onload = function () {
         history.pushState(null, null, location.href);
         loadCart();
     };
 
-    // Handle back button navigation
     window.onpopstate = function () {
         if (confirm("Are you sure you want to leave? Once you leave, your cart will be emptied.")) {
             clearCart();
         } else {
-            history.pushState(null, null, location.href); // Re-push the current state to prevent navigation
+            history.pushState(null, null, location.href);
         }
     };
 </script>

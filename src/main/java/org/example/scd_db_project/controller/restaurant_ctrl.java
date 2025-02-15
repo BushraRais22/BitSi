@@ -35,9 +35,10 @@ public class restaurant_ctrl {
             model.addAttribute("message", "Email Already Exists");
             return "business_signup";
         }
-        r_service.aadRestaurant(email, password, name, type, phone, location);
-        model.addAttribute("message", "Signup Successful");
-        return "restaurant_login";
+        Restaurant restaurant=r_service.aadRestaurant(email, password, name, type, phone, location);
+        model.addAttribute("message","YOUR PROFILE HAS BEEN CREATED");
+        model.addAttribute("restaurant",restaurant) ;
+        return "restaurantaftersignup";
     }
 
     @PostMapping("/login")
@@ -75,7 +76,7 @@ public class restaurant_ctrl {
     public String showOrders(HttpSession session, Model model) {
         Integer restaurantId= (Integer) session.getAttribute("restaurantId");
         if(restaurantId==null){
-            return "redirect:/restaurant_ctrl/login";
+            return "/restaurant_login";
         }
         List<RestaurantOrder> orders =r_service.getOrdersByRestaurant(restaurantId);
         List<RestaurantMenu> menus = rm_service.getMenusByRestaurant(restaurantId);
@@ -108,8 +109,8 @@ public class restaurant_ctrl {
         List<RestaurantOrder> orders = r_service.getOrdersByRestaurant(restaurantId);
 
         model.addAttribute("menus", menus);
-        model.addAttribute("orders", orders); // Make sure to add this if not already included
-        return "restaurant_homepage"; // View for managing menus
+        model.addAttribute("orders", orders);
+        return "restaurant_homepage";
     }
 
     @PostMapping("/updateMenu")

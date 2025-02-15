@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Chef Homepage</title>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const message = /*[[${message}]]*/ 'default message if not present';
+            if (message && message !== 'default message if not present') {
+                alert(message);
+            }
+        });
+    </script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f7f7f7;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #4A90E2;
+        }
+        .profile-container {
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        p {
+            line-height: 1.6;
+            margin: 10px 0;
+        }
+        strong {
+            color: #555;
+        }
+        button {
+            background-color: #4A90E2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #357ABD;
+        }
+    </style>
+</head>
+<body>
+<h1>Welcome, <span th:text="${restaurant.r_name}"></span>!</h1>
+<div class="profile-container">
+    <h2>Your Profile Details</h2>
+    <p><strong>Email:</strong> <span th:text="${restaurant.email}"></span></p>
+    <p><strong>Phone:</strong> <span th:text="${restaurant.r_phone}"></span></p>
+    <p><strong>Location:</strong> <span th:text="${restaurant.location}"></span></p>
+</div>
+<button th:onclick="|window.location='/business_signup'|">Back</button>
+</body>
+</html>

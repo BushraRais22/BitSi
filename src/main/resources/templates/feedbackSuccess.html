@@ -2,11 +2,44 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Review Submitted </title>
+  <title>Review Submitted</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f7f7f7;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      text-align: center;
+    }
+    h1 {
+      color: #4CAF50;
+    }
+    a {
+      padding: 10px 20px;
+      background-color: #007BFF;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+    a:hover {
+      background-color: #0056b3;
+    }
+    p {
+      color: #666;
+      padding: 20px;
+      font-size: 18px;
+    }
+  </style>
 </head>
 <body>
-<h1>Thank you for the feedback</h1>
-<p th:if="${message}" th:text="${message}"></p>
-<a th:href="@{/chef_ctrl/chefs}">Return to Homepage</a>
+<div>
+  <h1>Thank you for the feedback</h1>
+  <p th:if="${message}" th:text="${message}"></p>
+  <a th:href="@{/chef_ctrl/chefs}">Return to Homepage</a>
+</div>
 </body>
 </html>

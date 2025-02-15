@@ -3,15 +3,52 @@
 <head>
   <meta charset="UTF-8">
   <title>Rating</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f8;
+      text-align: center;
+      padding: 20px;
+    }
+    form {
+      background: white;
+      padding: 20px;
+      display: inline-block;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      margin-top: 20px;
+    }
+    label {
+      display: block;
+      margin: 20px;
+    }
+    textarea {
+      width: 90%;
+      height: 100px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    select, button {
+      padding: 10px 15px;
+      margin-top: 10px;
+      border-radius: 4px;
+    }
+    button {
+      background-color: #5cb85c;
+      color: white;
+      cursor: pointer;
+      border: none;
+    }
+    button:hover {
+      background-color: #4cae4c;
+    }
+  </style>
 </head>
 <body>
 <h1>RATINGS AND REVIEWS</h1>
 <form th:action="@{/chef_ctrl/submit_review}" method="post">
-  <!-- Hidden fields to pass customer and restaurant IDs -->
   <input type="hidden" id="customerId" name="customerId" th:value="${customerId}" />
   <input type="hidden" id="chefId" name="chefId" th:value="${chefId}" />
-
-  <!-- Field for rating score -->
   <label for="ratingScore">Rating Score (1 to 5):</label>
   <select id="ratingScore" name="ratingScore">
     <option value="1">1</option>
@@ -20,12 +57,8 @@
     <option value="4">4</option>
     <option value="5">5</option>
   </select>
-
-  <!-- Field for review -->
   <label for="reviewText">Review:</label>
-  <textarea id="reviewText" name="reviewText" rows="4" cols="50" placeholder="Enter your review here..."></textarea>
-
-  <!-- Submit button -->
+  <textarea id="reviewText" name="reviewText" placeholder="Enter your review here..."></textarea>
   <button type="submit">Submit Review</button>
 </form>
 </body>

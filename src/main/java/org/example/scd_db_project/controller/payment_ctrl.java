@@ -30,7 +30,6 @@ public class payment_ctrl {
         return "Payment processed successfully for Order ID: " + orderId + " with " + paymentMethod;
 
     }
-
     @GetMapping("/details/{orderId}")
     public ModelAndView getPaymentDetails(@PathVariable int orderId) {
         List<OrderItem> items = orderItemRepository.findByRestaurantOrderId(orderId);
@@ -46,6 +45,11 @@ public class payment_ctrl {
         modelAndView.addObject("orderItems", items);
         modelAndView.addObject("totalAmount", total);
         modelAndView.addObject("orderId", orderId);
+
+        System.out.println("Items: " + items);
+        System.out.println("Total: " + total);
+        System.out.println("Order ID: " + orderId);
+
         return modelAndView;
     }
 }
